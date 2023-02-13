@@ -1,16 +1,38 @@
 #!/usr/bin/python3
 """ shebang """
-from sys import argv as av
+
+import sys
 
 
-load_from_json_file = __import__('6-load_from_json_file').load_from_json_file
 save_to_json_file = __import__('5-save_to_json_file').save_to_json_file
+load_from_json_file = __import__('6-load_from_json_file').load_from_json_file
 
 
-filename = "add_item.json"
-try:
-    my_list = load_from_json_file(filename)
-except FileNotFoundError:
-    my_list = []
-my_list.extend(av[1:])
-save_to_json_file(my_list, filename)
+def main():
+    """ main function """
+    args = sys.argv
+    filename = "add_item.json"
+
+    new_list = []
+
+    try:
+        with open(filename, 'r', encoding="utf-8") as f:
+
+            if len(f.read()) != 3:
+
+                formated_content = load_from_json_file(filename)
+                new_list = formated_content + args[1:]
+            else:
+                new_list += args[1:]
+
+            save_to_json_file(new_list, filename)
+
+    except FileNotFoundError:
+        with open(filename, 'w', encoding="utf-8") as f:
+
+            new_list += args[1:]
+            save_to_json_file(new_list, filename)
+
+
+if __name__ == "__main__":
+    main()
